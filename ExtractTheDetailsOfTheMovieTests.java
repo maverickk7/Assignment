@@ -13,24 +13,36 @@ import dev.failsafe.internal.util.Assert;
 
 public class ExtractTheDetailsOfTheMovieTests {
 
-	private String  movieReleaseDate= "17 December 2021";
-	private String  movieCountry= "India";
+	public String  movieReleaseDate= "17 December 2021";
+	public String  movieCountry= "India";
 	@Test
-private void extractTheDetailsOfTheMovieTest() throws InterruptedException {
+public void extractTheDetailsOfTheMovieTest() throws InterruptedException {
 		System.setProperty("webdriver.opera.driver", "D:\\operadriver.exe");
 		WebDriver driver=new OperaDriver();
+		
+//		maximize browser window
 		driver.manage().window().maximize();
+		
+// 		launch the URL		
 		driver.get("https://en.wikipedia.org/wiki/Main_Page");
 		
-		driver.findElement(By.xpath("//input[@name='search']")).sendKeys("Pushpa: The Rise");
-		Thread.sleep(3000);
-		driver.findElement(By.xpath("//input[@id='searchButton']")).click();
-		Thread.sleep(3000);
-		WebElement releaseDate = driver.findElement(By.xpath("//*[@id='mw-content-text']//tr/th//div[text()='Release date']/parent::th/following-sibling::td//li"));
-		assertEquals(releaseDate.getText(), movieReleaseDate,"Release date is not matched for pushpa movie");
-		WebElement country = driver.findElement(By.xpath("//*[@id='mw-content-text']//tr/th[text()='Country']/following-sibling::td"));
-		assertEquals(country.getText(), movieCountry,"Country is not matched for pushpa movie");
+		ExctractTheDetailsOfTheMovieFactory obj= new ExctractTheDetailsOfTheMovieFactory(driver);
 		
+//		Entered movie name into search box
+		obj.enterMovieName("Pushpa: The Rise");
+		Thread.sleep(3000);
+		
+//		clicked on search button		
+		obj.clickOnSearchButton();
+		Thread.sleep(3000);
+		
+//		verify that release date is correct		
+		obj.verifyReleaseDate(movieReleaseDate);
+		
+//		verify that country is correct	
+		obj.verifyCountry(movieCountry);
+		
+//		closed the browser	
 		driver.quit();
 }
 }
